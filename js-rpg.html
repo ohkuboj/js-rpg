@@ -13,6 +13,14 @@
   <h1>⚔️ Mini RPG</h1>
   <div id="game">
     <input type="text" id="playerName" placeholder="Enter your name">
+      
+    <label for="playerClass">Choose your class:</label>
+    <select id="playerClass">
+      <option value="warrior">Warrior</option>
+      <option value="mage">Mage</option>
+      <option value="rogue">Rogue</option>
+    </select>
+    
     <button onclick="startGame()">Start Game</button>
   </div>
   <div id="battle" style="display:none;">
@@ -25,15 +33,44 @@
   <script>
     let player, enemy;
 
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+      
+    function updateStatus() {
+      document.getElementById("status").textContent =
+        `${player.name} (${capitalize(player.class)}) HP: ${player.hp} | ${enemy.name} HP: ${enemy.hp}`;
+    }
+
     function startGame() {
       const name = document.getElementById("playerName").value || "Hero";
-      player = { name, hp: 30, attack: 10 };
+      const selectedClass = document.getElementById("playerClass").value;
+
+      // Assign stats based on class
+      if (selectedClass === "warrior") {
+        hp = 40;
+        attack = 8;
+      } else if (selectedClass === "mage") {
+        hp = 25;
+        attack = 12;
+      } else if (selectedClass === "rogue") {
+        hp = 30;
+        attack = 10;
+      }
+
+      player = {
+        name,
+        class: selectedClass,
+        hp,
+        attack
+      };
+
       enemy = { name: "Goblin", hp: 20, attack: 6 };
       
       document.getElementById("game").style.display = "none";
       document.getElementById("battle").style.display = "block";
       updateStatus();
-      log(`${player.name} vs ${enemy.name} begins!\n`);
+      log(`${player.name} the ${capitalize(player.class)} enters battle against ${enemy.name}!\n`);
     }
 
     function playerAttack() {
