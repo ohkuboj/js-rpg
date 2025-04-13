@@ -36,6 +36,4 @@ cd js-rpg
 
 ## 🎮 Play the Game
 
-## 🎮 Play the Game
-
-👉 [Click here to play!](https://ohkuboj.github.io/js-rpg/)
+👉 [Follow this link to play](https://ohkuboj.github.io/js-rpg/)
