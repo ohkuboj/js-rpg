@@ -18,6 +18,7 @@
   <div id="battle" style="display:none;">
     <h2 id="status"></h2>
     <button onclick="playerAttack()">Attack</button>
+    <button onclick="restartGame()" style="display:none;" id="restartBtn">Restart</button>
     <div class="log" id="log"></div>
   </div>
 
@@ -48,16 +49,19 @@
         enemy.hp = 0;
         updateStatus();
         log(`${enemy.name} is defeated! 🎉`);
+        document.getElementById("restartBtn").style.display = "inline-block";
         return;
       }
 
       player.hp -= enemyDamage;
       log(`${enemy.name} hits ${player.name} for ${enemyDamage} damage.`);
 
+
       if (player.hp <= 0) {
         player.hp = 0;
         updateStatus();
         log(`${player.name} was defeated... 💀`);
+        document.getElementById("restartBtn").style.display = "inline-block";
         return;
       }
 
@@ -73,6 +77,17 @@
       const logDiv = document.getElementById("log");
       logDiv.textContent += message + '\n';
       logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    function restartGame() {
+      // Clear previous log
+      document.getElementById("log").textContent = '';
+      // Reset UI
+      document.getElementById("battle").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      document.getElementById("restartBtn").style.display = "none";
+      // Clear input if you want
+      document.getElementById("playerName").value = '';
     }
   </script>
 </body>
