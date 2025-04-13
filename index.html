@@ -25,18 +25,28 @@
   </div>
   <div id="battle" style="display:none;">
     <h2 id="status"></h2>
+    <img id="portrait" src="" alt="Character Portrait" style="width: 150px; display: block; margin-top: 10px;">
     <button onclick="playerAttack()">Attack</button>
+    <button onclick="useAbility()">Use Special Ability</button>
     <button onclick="restartGame()" style="display:none;" id="restartBtn">Restart</button>
     <div class="log" id="log"></div>
   </div>
 
   <script>
+    window.onload = function () {
+      const savedClass = localStorage.getItem("rpgClass");
+      if (savedClass) {
+        document.getElementById("playerClass").value = savedClass;
+      }
+    };
+
+
     let player, enemy;
 
     function capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
       }
-      
+
     function updateStatus() {
       document.getElementById("status").textContent =
         `${player.name} (${capitalize(player.class)}) HP: ${player.hp} | ${enemy.name} HP: ${enemy.hp}`;
@@ -45,17 +55,21 @@
     function startGame() {
       const name = document.getElementById("playerName").value || "Hero";
       const selectedClass = document.getElementById("playerClass").value;
+      const portrait = document.getElementById("portrait");
 
-      // Assign stats based on class
+      // Assign stats and portrait based on class
       if (selectedClass === "warrior") {
         hp = 40;
         attack = 8;
+        portrait.src = "img/warrior.png";
       } else if (selectedClass === "mage") {
         hp = 25;
         attack = 12;
+        portrait.src = "img/mage.png";
       } else if (selectedClass === "rogue") {
         hp = 30;
         attack = 10;
+        portrait.src = "img/rogue.png";
       }
 
       player = {
@@ -64,6 +78,8 @@
         hp,
         attack
       };
+
+      localStorage.setItem("rpgClass", selectedClass);
 
       enemy = { name: "Goblin", hp: 20, attack: 6 };
       
@@ -105,6 +121,51 @@
       updateStatus();
     }
 
+    function useAbility() {
+      if (!player.hp || !enemy.hp) return;
+
+      let damage = 0;
+      if (player.class === "warrior") {
+        damage = Math.floor(Math.random() * player.attack) + 1;
+        damage *= 2;
+        log(`${player.name} uses Shield Bash! Deals ${damage} damage!`);
+      } else if (player.class === "mage") {
+        damage = Math.floor(Math.random() * 7) + 12; // 12–18
+        log(`${player.name} casts Fireball! Deals ${damage} damage!`);
+      } else if (player.class === "rogue") {
+        let hit1 = Math.floor(Math.random() * 5) + 4; // 4–8
+        let hit2 = Math.floor(Math.random() * 5) + 4;
+        damage = hit1 + hit2;
+        log(`${player.name} strikes twice! ${hit1} + ${hit2} = ${damage} damage!`);
+      }
+
+      enemy.hp -= damage;
+      if (enemy.hp <= 0) {
+        enemy.hp = 0;
+        updateStatus();
+        log(`${enemy.name} is defeated by your special move! 🎉`);
+        document.getElementById("restartBtn").style.display = "inline-block";
+        return;
+      }
+
+      updateStatus();
+      // Enemy counterattacks
+      const enemyDamage = Math.floor(Math.random() * enemy.attack) + 1;
+      player.hp -= enemyDamage;
+      log(`${enemy.name} counters for ${enemyDamage} damage!`);
+
+      if (player.hp <= 0) {
+        player.hp = 0;
+        updateStatus();
+        log(`${player.name} was defeated... 💀`);
+        document.getElementById("restartBtn").style.display = "inline-block";
+        return;
+      }
+
+      updateStatus();
+    }
+
+    
     function updateStatus() {
       document.getElementById("status").textContent =
         `${player.name} HP: ${player.hp} | ${enemy.name} HP: ${enemy.hp}`;
