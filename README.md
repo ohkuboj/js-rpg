@@ -36,4 +36,6 @@ cd js-rpg
 
 ## 🎮 Play the Game
 
-👉 [Click here to play!](https://ohkuboj.github.io/js-rpg/)
+<a href="https://ohkuboj.github.io/js-rpg/" target="_blank">
+  <img src="https://img.shields.io/badge/Play-Now-green?style=for-the-badge" alt="Play Now">
+</a>
