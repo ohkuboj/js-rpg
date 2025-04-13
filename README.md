@@ -33,3 +33,7 @@ A simple text-based RPG built with JavaScript, HTML, and CSS. Fight monsters, su
 ```bash
 git clone https://github.com/ohkuboj/js-rpg.git
 cd js-rpg
+
+## 🎮 Play the Game
+
+👉 [Click here to play!](https://ohkuboj.github.io/js-rpg/)
