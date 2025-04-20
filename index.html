@@ -43,7 +43,7 @@
   <div id="battle" style="display:none;">
     <h2 id="status"></h2>
     <img id="portrait" src="" alt="Character Portrait" style="width: 150px; display: block; margin-top: 10px;">
-    
+    <img id="enemyPortrait" src="img/goblin.png" alt="Goblin" style="width: 150px; display: block; margin-top: 10px;">
   <div>
     <strong id="playerNameLabel"></strong>
     <div class="hp-bar">
@@ -150,6 +150,10 @@
         defense: 1,
         crit: 0.05
       };
+
+      const enemyPortrait = document.getElementById("enemyPortrait");
+      enemyPortrait.src = "img/goblin.png";
+      enemyPortrait.alt = enemy.name;
             
       document.getElementById("game").style.display = "none";
       document.getElementById("battle").style.display = "block";
