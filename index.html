@@ -40,24 +40,24 @@
     
     <button onclick="startGame()">Start Game</button>
 
-  <div>
-    <strong id="playerNameLabel"></strong>
-    <div class="hp-bar">
-      <div id="playerHpFill" class="hp-fill"></div>
+    <div id="battle" style="display:none;">
+      <h2 id="status"></h2>
+      <img id="portrait" src="" alt="Character Portrait" style="width: 150px; display: block; margin-top: 10px;">
+      
+    <div>
+      <strong id="playerNameLabel"></strong>
+      <div class="hp-bar">
+        <div id="playerHpFill" class="hp-fill"></div>
+      </div>
     </div>
-  </div>
   
-  <div style="margin-top: 10px;">
-    <strong id="enemyNameLabel"></strong>
-    <div class="hp-bar">
-      <div id="enemyHpFill" class="hp-fill"></div>
+    <div style="margin-top: 10px;">
+      <strong id="enemyNameLabel"></strong>
+      <div class="hp-bar">
+        <div id="enemyHpFill" class="hp-fill"></div>
+      </div>
     </div>
-  </div>
-
-  </div>
-  <div id="battle" style="display:none;">
-    <h2 id="status"></h2>
-    <img id="portrait" src="" alt="Character Portrait" style="width: 150px; display: block; margin-top: 10px;">
+  
     <button onclick="playerAttack()">Attack</button>
     <button onclick="useAbility()">Use Special Ability</button>
     <button onclick="restartGame()" style="display:none;" id="restartBtn">Restart</button>
