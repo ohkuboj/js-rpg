@@ -42,25 +42,30 @@
 
   <div id="battle" style="display:none;">
     <h2 id="status"></h2>
-    <img id="portrait" src="" alt="Character Portrait" style="width: 150px; display: block; margin-top: 10px;">
-    <img id="enemyPortrait" src="img/goblin.png" alt="Goblin" style="width: 150px; display: block; margin-top: 10px;">
+
+  <!-- Player Image + Name -->
   <div>
     <strong id="playerNameLabel"></strong>
+    <img id="portrait" src="" alt="Player Portrait" style="width: 150px; display: block; margin-top: 5px;">
     <div class="hp-bar">
       <div id="playerHpFill" class="hp-fill"></div>
     </div>
   </div>
 
-  <div style="margin-top: 10px;">
-    <strong id="enemyNameLabel"></strong>
+  <!-- Enemy Image + Name -->
+  <div style="margin-top: 20px;">
+    <strong id="enemyNameLabel">Goblin</strong>
+    <img id="enemyPortrait" src="img/goblin.png" alt="Goblin" style="width: 150px; display: block; margin-top: 5px;">
     <div class="hp-bar">
       <div id="enemyHpFill" class="hp-fill"></div>
     </div>
   </div>
-  
+
+  <!-- Action Buttons -->
   <button onclick="playerAttack()">Attack</button>
   <button onclick="useAbility()">Use Special Ability</button>
   <button onclick="restartGame()" style="display:none;" id="restartBtn">Restart</button>
+
   <div class="log" id="log"></div>
 </div>
 
