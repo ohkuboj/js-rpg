@@ -7,6 +7,23 @@
     body { font-family: Arial, sans-serif; padding: 20px; }
     .log { white-space: pre-line; background: #f0f0f0; padding: 10px; margin-top: 10px; }
     button { padding: 10px 15px; margin-top: 10px; }
+    .hp-bar {
+      width: 200px;
+      height: 20px;
+      background-color: #ccc;
+      border: 1px solid #999;
+      border-radius: 4px;
+      margin-top: 2px;
+    }
+
+    .hp-fill {
+      height: 100%;
+      background-color: #4caf50;
+      width: 100%; /* Default full */
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
   </style>
 </head>
 <body>
@@ -22,6 +39,21 @@
     </select>
     
     <button onclick="startGame()">Start Game</button>
+
+  <div>
+    <strong id="playerNameLabel"></strong>
+    <div class="hp-bar">
+      <div id="playerHpFill" class="hp-fill"></div>
+    </div>
+  </div>
+  
+  <div style="margin-top: 10px;">
+    <strong id="enemyNameLabel"></strong>
+    <div class="hp-bar">
+      <div id="enemyHpFill" class="hp-fill"></div>
+    </div>
+  </div>
+
   </div>
   <div id="battle" style="display:none;">
     <h2 id="status"></h2>
@@ -50,7 +82,20 @@
     function updateStatus() {
       document.getElementById("status").textContent =
         `${player.name} (${capitalize(player.class)}) HP: ${player.hp} | ATK: ${player.attack} | DEF: ${player.defense} | Enemy (${enemy.name}) HP: ${enemy.hp}`;
-      }
+
+      // Set HP bar widths
+      const playerHpPercent = Math.max(0, (player.hp / player.maxHp) * 100);
+      const enemyHpPercent = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
+
+      document.getElementById("playerHpFill").style.width = `${playerHpPercent}%`;
+      document.getElementById("enemyHpFill").style.width = `${enemyHpPercent}%`;
+
+      // Set labels
+      document.getElementById("playerNameLabel").textContent = `${player.name}`;
+      document.getElementById("enemyNameLabel").textContent = `${enemy.name}`;
+    }
+
+      
 
     function startGame() {
       const name = document.getElementById("playerName").value || "Hero";
@@ -88,6 +133,7 @@
         name,
         class: selectedClass,
         hp,
+        maxHp: hp,
         attack,
         defense,
         crit,
@@ -99,6 +145,7 @@
       enemy = {
         name: "Goblin",
         hp: 20,
+        maxHp: 20,
         attack: 6,
         defense: 1,
         crit: 0.05
