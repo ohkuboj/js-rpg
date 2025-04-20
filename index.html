@@ -24,6 +24,16 @@
       transition: width 0.3s ease;
     }
 
+    .flash {
+      animation: flashEffect 0.3s ease;
+    }
+
+    @keyframes flashEffect {
+      0% { filter: brightness(1); }
+      50% { filter: brightness(2); }
+      100% { filter: brightness(1); }
+    }
+
   </style>
 </head>
 <body>
@@ -44,9 +54,10 @@
   <h2 id="status"></h2>
 
   <!-- Character display area -->
-  <div style="display: flex; gap: 60px; justify-content: flex-start; align-items: flex-start; margin-bottom: 20px;">
-    
+  <div style="display: flex; gap: 60px; justify-content: center; align-items: center; margin-bottom: 20px;">
+
     <!-- Player section -->
+  <div style="width: 180px; text-align: center;">
     <div style="text-align: center;">
       <strong id="playerNameLabel"></strong>
       <img id="portrait" src="" alt="Player Portrait" style="width: 150px; margin-top: 5px;">
@@ -54,8 +65,10 @@
         <div id="playerHpFill" class="hp-fill"></div>
       </div>
     </div>
+  </div>
 
     <!-- Enemy section -->
+  <div style="width: 180px; text-align: center;">
     <div style="text-align: center;">
       <strong id="enemyNameLabel">Goblin</strong>
       <img id="enemyPortrait" src="img/goblin.png" alt="Goblin" style="width: 150px; margin-top: 5px;">
@@ -63,7 +76,7 @@
         <div id="enemyHpFill" class="hp-fill"></div>
       </div>
     </div>
-
+  </div>
   </div>
 
   <!-- Actions -->
@@ -84,7 +97,40 @@
     };
 
 
-    let player, enemy;
+    let player;
+    let enemies = [
+          {
+            name: "Goblin",
+            hp: 20,
+            maxHp: 20,
+            attack: 6,
+            defense: 1,
+            crit: 0.05,
+            img: "img/goblin.png"
+          },
+          {
+            name: "Orc",
+            hp: 30,
+            maxHp: 30,
+            attack: 8,
+            defense: 2,
+            crit: 0.1,
+            img: "img/orc.png"
+          },
+          {
+            name: "Dragon",
+            hp: 50,
+            maxHp: 50,
+            attack: 12,
+            defense: 4,
+            crit: 0.2,
+            img: "img/dragon.png"
+          }
+        ];
+
+        let currentEnemyIndex = 0;
+        let enemy = null; // will be set in startGame()
+    let gameOver = false;
 
     function capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
@@ -153,14 +199,7 @@
 
       localStorage.setItem("rpgClass", selectedClass);
 
-      enemy = {
-        name: "Goblin",
-        hp: 20,
-        maxHp: 20,
-        attack: 6,
-        defense: 1,
-        crit: 0.05
-      };
+      loadEnemy();
 
       const enemyPortrait = document.getElementById("enemyPortrait");
       enemyPortrait.src = "img/goblin.png";
@@ -183,13 +222,17 @@
 
       log(`${player.name} attacks for ${totalDamage} damage${isCrit ? ' (CRITICAL!)' : ''}.`);
       enemy.hp -= totalDamage;
+      flashElement("enemyPortrait");
 
       if (enemy.hp <= 0) {
         enemy.hp = 0;
         updateStatus();
         log(`${enemy.name} is defeated! 🎉`);
-        document.getElementById("restartBtn").style.display = "inline-block";
-        return;
+        currentEnemyIndex++;
+        setTimeout(() => {
+          loadEnemy();
+          updateStatus();
+        }, 1000); // 1 second pause before next enemy
       }
 
 
@@ -197,8 +240,11 @@
         player.hp = 0;
         updateStatus();
         log(`${player.name} was defeated... 💀`);
-        document.getElementById("restartBtn").style.display = "inline-block";
-        return;
+        currentEnemyIndex++;
+        setTimeout(() => {
+          loadEnemy();
+          updateStatus();
+        }, 1000); // 1 second pause before next enemy
       }
 
       updateStatus();
@@ -214,13 +260,19 @@
 
       log(`${enemy.name} attacks for ${totalDamage} damage${isCrit ? ' (CRITICAL!)' : ''}.`);
       player.hp -= totalDamage;
+      flashElement("portrait");
 
       if (player.hp <= 0) {
         player.hp = 0;
         updateStatus();
-        log(`${player.name} was defeated... 💀`);
+        log(`${player.name} was defeated... 💀 Game Over.`);
+        gameOver = true;
         document.getElementById("restartBtn").style.display = "inline-block";
-        return;
+        currentEnemyIndex++;
+        setTimeout(() => {
+          loadEnemy();
+          updateStatus();
+        }, 1000); // 1 second pause before next enemy
       }
 
       updateStatus();
@@ -260,14 +312,18 @@
         enemy.hp = 0;
         updateStatus();
         log(`${enemy.name} is defeated by your special move! 🎉`);
-        document.getElementById("restartBtn").style.display = "inline-block";
-        return;
+        currentEnemyIndex++;
+        setTimeout(() => {
+          loadEnemy();
+          updateStatus();
+        }, 1000); // 1 second pause before next enemy
       }
       document.querySelector('button[onclick="useAbility()"]').disabled = true;
 
       updateStatus();
-      // Enemy counterattacks
-      enemyTurn();
+      setTimeout(() => {
+        enemyTurn();
+      }, 500); // 0.5 seconds
 
       if (player.hp <= 0) {
         player.hp = 0;
@@ -288,6 +344,34 @@
       logDiv.scrollTop = logDiv.scrollHeight;
     }
 
+    function flashElement(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove("flash"); // Reset if it's still flashing
+      void el.offsetWidth;          // Force reflow (important!)
+      el.classList.add("flash");
+    }
+
+    function loadEnemy() {
+      if (gameOver) return;
+
+      if (currentEnemyIndex >= enemies.length) {
+        log("🏆 You defeated all enemies! The land is safe... for now.");
+        document.getElementById("enemyNameLabel").textContent = "No Enemy";
+        document.getElementById("enemyPortrait").style.display = "none";
+        document.getElementById("enemyHpFill").style.width = "0%";
+        return;
+      }
+
+      enemy = { ...enemies[currentEnemyIndex] }; // clone enemy object
+      const enemyPortrait = document.getElementById("enemyPortrait");
+      enemyPortrait.src = enemy.img;
+      enemyPortrait.alt = enemy.name;
+      enemyPortrait.style.display = "block";
+      document.getElementById("enemyNameLabel").textContent = enemy.name;
+      log(`⚔️ A wild ${enemy.name} appears!`);
+    }
+
     function restartGame() {
       // Clear previous log
       document.getElementById("log").textContent = '';
@@ -298,6 +382,8 @@
       // Clear input if you want
       document.getElementById("playerName").value = '';
       document.querySelector('button[onclick="useAbility()"]').disabled = false;
+      gameOver = false;
+      currentEnemyIndex = 0;
     }
   </script>
 </body>
