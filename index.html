@@ -59,6 +59,7 @@
 
 <div id="battle" style="display:none;">
   <h2 id="status"></h2>
+  <button onclick="useItem()">Use Health Potion</button>
 
   <!-- Character display area -->
   <div style="display: flex; gap: 60px; justify-content: center; align-items: center; margin-bottom: 20px;">
@@ -148,7 +149,7 @@
 
     function updateStatus() {
       document.getElementById("status").textContent =
-        `${player.name} (${capitalize(player.class)}) HP: ${player.hp} | ATK: ${player.attack} | DEF: ${player.defense} | Enemy (${enemy.name}) HP: ${enemy.hp}`;
+      `${player.name} (${capitalize(player.class)}) HP: ${player.hp} | ATK: ${player.attack} | DEF: ${player.defense} | Potions: ${player.inventory.healthPotion} | Enemy (${enemy.name}) HP: ${enemy.hp}`;
 
       // Set HP bar widths
       const playerHpPercent = Math.max(0, (player.hp / player.maxHp) * 100);
@@ -205,6 +206,9 @@
         defense,
         crit,
         usedAbility: false 
+        inventory: {
+          healthPotion: 1 // start with 1 potion
+        }
       };
 
       localStorage.setItem("rpgClass", selectedClass);
@@ -395,6 +399,21 @@
 
       log(`⚔️ A wild ${enemy.name} appears!`);
     }
+
+    function useItem() {
+      if (!player || !player.hp || gameOver) return;
+
+      if (player.inventory.healthPotion > 0) {
+        const healAmount = Math.min(player.maxHp - player.hp, 20); // heal up to 20 HP, but not over max
+        player.hp += healAmount;
+        player.inventory.healthPotion--;
+        updateStatus();
+        log(`${player.name} uses a Health Potion and recovers ${healAmount} HP! 🧪 (${player.inventory.healthPotion} left)`);
+      } else {
+        log(`${player.name} has no Health Potions left!`);
+      }
+    }
+
 
     function restartGame() {
       // Clear previous log
