@@ -60,6 +60,7 @@
 <div id="battle" style="display:none;">
   <h2 id="status"></h2>
   <button onclick="useItem()">Use Health Potion</button>
+  <div id="inventoryDisplay">Potions: 1</div>
 
   <!-- Character display area -->
   <div style="display: flex; gap: 60px; justify-content: center; align-items: center; margin-bottom: 20px;">
@@ -149,8 +150,8 @@
 
     function updateStatus() {
       document.getElementById("status").textContent =
-      `${player.name} (${capitalize(player.class)}) HP: ${player.hp} | ATK: ${player.attack} | DEF: ${player.defense} | Potions: ${player.inventory.healthPotion} | Enemy (${enemy.name}) HP: ${enemy.hp}`;
-
+      `${player.name} (${capitalize(player.class)}) HP: ${player.hp} | ATK: ${player.attack} | DEF: ${player.defense} | Enemy (${enemy.name}) HP: ${enemy.hp}`;
+      document.getElementById("inventoryDisplay").textContent = `Potions: ${player.inventory.healthPotion}`;
       // Set HP bar widths
       const playerHpPercent = Math.max(0, (player.hp / player.maxHp) * 100);
       const enemyHpPercent = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
@@ -242,6 +243,8 @@
         enemy.hp = 0;
         updateStatus();
         log(`${enemy.name} is defeated! 🎉`);
+        player.inventory.healthPotion++;
+        log(`${player.name} found a Health Potion! 🧪`);
         currentEnemyIndex++;
         setTimeout(() => {
           loadEnemy();
@@ -326,6 +329,8 @@
         enemy.hp = 0;
         updateStatus();
         log(`${enemy.name} is defeated by your special move! 🎉`);
+        player.inventory.healthPotion++;
+        log(`${player.name} found a Health Potion! 🧪`);
         currentEnemyIndex++;
         setTimeout(() => {
           loadEnemy();
