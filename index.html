@@ -28,6 +28,13 @@
       animation: flashEffect 0.3s ease;
     }
 
+    #battle {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
     @keyframes flashEffect {
       0% { filter: brightness(1); }
       50% { filter: brightness(2); }
@@ -99,34 +106,37 @@
 
     let player;
     let enemies = [
-          {
-            name: "Goblin",
-            hp: 20,
-            maxHp: 20,
-            attack: 6,
-            defense: 1,
-            crit: 0.05,
-            img: "img/goblin.png"
-          },
-          {
-            name: "Orc",
-            hp: 30,
-            maxHp: 30,
-            attack: 8,
-            defense: 2,
-            crit: 0.1,
-            img: "img/orc.png"
-          },
-          {
-            name: "Dragon",
-            hp: 50,
-            maxHp: 50,
-            attack: 12,
-            defense: 4,
-            crit: 0.2,
-            img: "img/dragon.png"
-          }
-        ];
+        {
+          name: "Goblin",
+          hp: 20,
+          maxHp: 20,
+          attack: 6,
+          defense: 1,
+          crit: 0.05,
+          img: "img/goblin.png",
+          background: "img/bg-forest.jpg"
+        },
+        {
+          name: "Orc",
+          hp: 30,
+          maxHp: 30,
+          attack: 8,
+          defense: 2,
+          crit: 0.1,
+          img: "img/orc.png",
+          background: "img/bg-cave.jpg"
+        },
+        {
+          name: "Dragon",
+          hp: 50,
+          maxHp: 50,
+          attack: 12,
+          defense: 4,
+          crit: 0.2,
+          img: "img/dragon.png",
+          background: "img/bg-volcano.jpg"
+        }
+      ];
 
         let currentEnemyIndex = 0;
         let enemy = null; // will be set in startGame()
@@ -360,15 +370,29 @@
         document.getElementById("enemyNameLabel").textContent = "No Enemy";
         document.getElementById("enemyPortrait").style.display = "none";
         document.getElementById("enemyHpFill").style.width = "0%";
+        
+        // Optional: Reset background to default victory screen
+        document.body.style.backgroundImage = "url('img/bg-victory.jpg')"; 
         return;
       }
 
       enemy = { ...enemies[currentEnemyIndex] }; // clone enemy object
+
+      // Set enemy portrait
       const enemyPortrait = document.getElementById("enemyPortrait");
       enemyPortrait.src = enemy.img;
       enemyPortrait.alt = enemy.name;
       enemyPortrait.style.display = "block";
+
+      // Update enemy name
       document.getElementById("enemyNameLabel").textContent = enemy.name;
+
+      // ✅ Set the battle background
+      document.body.style.backgroundImage = `url('${enemy.background}')`;
+      document.body.style.backgroundSize = "cover";
+      document.body.style.backgroundRepeat = "no-repeat";
+      document.body.style.backgroundPosition = "center";
+
       log(`⚔️ A wild ${enemy.name} appears!`);
     }
 
